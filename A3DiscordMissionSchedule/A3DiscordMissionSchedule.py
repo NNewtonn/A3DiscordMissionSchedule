@@ -3,6 +3,15 @@ import sensitiveData
 import discord
 from discord.ext import commands
 from discord.ui import InputText, Modal
+import logging  
+
+logging.getLogger.basicConfig(level=logging.INFO)
+logger = logging.getLoger("discord")
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename="discord.log",encoding="utf-8",mode="w")
+handler.setFormatter(logging.formatter("%(asctime)s:%(LevelName)s:%(name)s:%(message)s"))
+logger.addHandler(handler)
+
 # Notas:
 # ctx quiere decir el contexto, por ejemplo en  "async def modaltest(ctx):"
 # Cuando se llama a modaltest el contexto nos dice informacion sobre como ha sido llamado, por quien, cuando etc
