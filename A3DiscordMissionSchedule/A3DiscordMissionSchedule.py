@@ -1,4 +1,5 @@
 from http import server
+import sensitiveData
 import discord
 from discord.ext import commands
 from discord.ui import InputText, Modal
@@ -10,6 +11,10 @@ from discord.ui import InputText, Modal
 # En ese ejemplo imprimo el id del canal por donde ha sido llamado
 bot = discord.Bot()
 servers = [945803024897564723]
+
+
+   
+token = sensitiveData.Data.token()
 
 class MyModal(Modal):
     def __init__(self, *args, **kwargs) -> None:
@@ -71,4 +76,4 @@ def add_reactions(ctx):
 async def on_message(message):
   print(f"Message from {message.author}: {message.content}")
 
-bot.run('NDg0NDc3MTc3MzEyODM3NjMy.W4cSiA.bsURvBHLf6RaV2y8F55n_Huq9nU')
+bot.run(token)
