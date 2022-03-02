@@ -41,14 +41,17 @@ async def test(ctx):
   print("Command recieved")
   await ctx.respond(f"I am working \n\nLatency: {bot.latency*1000} ms.")
 
-@bot.slash_command(name="modaltest", guild_ids= servers)
-async def modaltest(ctx):
+@bot.slash_command(name="createevent", guild_ids= servers)
+async def createevent(ctx):
+    print("Command recieved")
 
     class MyView(discord.ui.View):
         @discord.ui.button(label="Start setup", style=discord.ButtonStyle.primary)
         async def button_callback(self, button, interaction):
             modal = MyModal(title="Modal Triggered from Button")
-            await interaction.response.send_modal(modal)
+            channel = ctx.channel.id
+            print(f"Channel: {channel}")
+            await channel.send.send_modal(modal)
 
         @discord.ui.select(
             placeholder="Select the preset",
@@ -63,14 +66,18 @@ async def modaltest(ctx):
             modal = MyModal(title="Temporary Title")
             modal.title = select.values[0]
             await interaction.response.send_modal(modal)
+            
         add_reactions(ctx)
     view = MyView()
-    await ctx.send("Select a preset to make the event with", view=view)
+    author = ctx.author
+    print(f"Author: {author}")
+    await author.send("Select a preset to make the event with", view=view)
 
 def add_reactions(ctx):
   print("Adding reactions")
   channel = ctx.channel.id
-  print(f"{channel}")
+  print(f"Channel: {channel}")
+  
 
 @bot.event
 async def on_message(message):
