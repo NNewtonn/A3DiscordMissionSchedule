@@ -5,13 +5,7 @@ from discord.ext import commands
 from discord.ui import InputText, Modal
 import logging  
 import json
-
-member_list = {"Miembro":"juan"}
-json1 = json.dumps(member_list, indent = 2)
-file = open("members.json", "a")
-file.write(json1)
-file.close
-                    
+                
 #logging.basicConfig(level=logging.DEBUG)
 #logger = logging.getLogger("discord")
 #logger.setLevel(logging.DEBUG)
@@ -57,10 +51,13 @@ async def test(ctx):
   print("Command recieved")
   await ctx.respond(f"I am working \n\nLatency: {bot.latency*1000} ms.")
 
+
 @bot.slash_command(name="showmembers", guild_ids= servers)
 async def showmembers(ctx):
     with open("members.json", "r") as json_file:
-        for line in json_file.redlines():
+        str = ""
+        for line in json_file.readlines():
+            str = str.replace("\'", "\"")
             data=json.loads(line)
             for item in data:
                 print(item)
