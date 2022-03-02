@@ -62,12 +62,14 @@ async def seewmembers(ctx):
         default = "Su data es "
         respuesta = ""
         respuesta = respuesta + default
+        
         count = 0
         for line in json_file.readlines():       
             data=json.loads(line)
             for item in data["miembros"]:
                 print(count)
-                respuesta = respuesta + data["miembros"][count]["nombre"] + " "
+                respuesta2= data["miembros"][count]["misiones"]
+                respuesta = respuesta + data["miembros"][count]["nombre"] + " = " + respuesta2 + " || "
                 count = count + 1
         await ctx.respond(respuesta)  
         
