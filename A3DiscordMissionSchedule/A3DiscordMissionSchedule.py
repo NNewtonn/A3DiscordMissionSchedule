@@ -1,11 +1,13 @@
 from http import server
-import sensitiveData
+from data import sensitiveData
 import discord
 from discord.ext import commands
 from discord.ui import InputText, Modal
 import logging  
 import json
-                
+import os 
+
+
 #logging.basicConfig(level=logging.DEBUG)
 #logger = logging.getLogger("discord")
 #logger.setLevel(logging.DEBUG)
@@ -49,18 +51,26 @@ class MyModal(Modal):
 @bot.slash_command(guild_ids = servers, name="test", description = "Testing things out")
 async def test(ctx):
   print("Command recieved")
-  await ctx.respond(f"I am working \n\nLatency: {bot.latency*1000} ms.")
+  await ctx.respond(f"I am working, \n\nMy Latency Is: {bot.latency*1000} ms.")
 
 
-@bot.slash_command(name="showmembers", guild_ids= servers)
-async def showmembers(ctx):
+
+@bot.slash_command(name="seemembers", guild_ids= servers, description = "Watch Member List")
+async def seewmembers(ctx):
     with open("members.json", "r") as json_file:
-        str = ""
-        for line in json_file.readlines():
-            str = str.replace("\'", "\"")
+        
+        default = "Su data es "
+        respuesta = ""
+        respuesta = respuesta + default
+        count = 0
+        for line in json_file.readlines():       
             data=json.loads(line)
-            for item in data:
-                print(item)
+            for item in data["miembros"]:
+                print(count)
+                respuesta = respuesta + data["miembros"][count]["nombre"] + " "
+                count = count + 1
+        await ctx.respond(respuesta)  
+        
 
 @bot.slash_command(name="createevent", guild_ids= servers)
 async def createevent(ctx):
@@ -72,7 +82,7 @@ async def createevent(ctx):
             modal = MyModal(title="Modal Triggered from Button")
             channel = ctx.channel.id
             print(f"Channel: {channel}")
-            await channel.send.send_modal(modal)
+            await channel.send.send_modal(f"modal")
 
         @discord.ui.select(
             placeholder="Select the preset",
