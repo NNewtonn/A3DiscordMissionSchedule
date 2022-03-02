@@ -4,14 +4,20 @@ import discord
 from discord.ext import commands
 from discord.ui import InputText, Modal
 import logging  
+import json
 
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger("discord")
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename="discord.log",encoding="utf-8",mode="w")
-handler.setFormatter(logging.Formatter("%(asctime)s:%(LevelName)s:%(name)s:%(message)s"))
-logger.addHandler(handler)
+member_list = {"Miembro":"juan"}
+json1 = json.dumps(member_list, indent = 2)
+file = open("members.json", "a")
+file.write(json1)
+file.close
+                    
+#logging.basicConfig(level=logging.DEBUG)
+#logger = logging.getLogger("discord")
+#logger.setLevel(logging.DEBUG)
+#handler = logging.FileHandler(filename="discord.log",encoding="utf-8",mode="w")
+#handler.setFormatter(logging.Formatter("%(asctime)s:%(LevelName)s:%(name)s:%(message)s"))
+#logger.addHandler(handler)
 
 # Notas:
 # ctx quiere decir el contexto, por ejemplo en  "async def modaltest(ctx):"
@@ -50,6 +56,14 @@ class MyModal(Modal):
 async def test(ctx):
   print("Command recieved")
   await ctx.respond(f"I am working \n\nLatency: {bot.latency*1000} ms.")
+
+@bot.slash_command(name="showmembers", guild_ids= servers)
+async def showmembers(ctx):
+    with open("members.json", "r") as json_file:
+        for line in json_file.redlines():
+            data=json.loads(line)
+            for item in data:
+                print(item)
 
 @bot.slash_command(name="createevent", guild_ids= servers)
 async def createevent(ctx):
