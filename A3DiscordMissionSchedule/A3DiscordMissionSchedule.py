@@ -3,8 +3,10 @@ from data import sensitiveData
 import discord
 from discord.ext import commands
 from discord.ui import InputText, Modal
+from discord import Embed
 import logging  
 import json
+from json import loads
 import os 
 
 
@@ -54,9 +56,23 @@ async def test(ctx):
   await ctx.respond(f"I am working, \n\nMy Latency Is: {bot.latency*1000} ms.")
 
 
+@bot.slash_command(name="currentmembers", guild_ids= servers, description = "Watch Member List")
+async def currentmembers(ctx):
+    async def parse_embed_json(json_file):
+        embdes_json = loads(json_file)["members"]
+        for embed_json in embdes_json:
+            embed = Embed().from_dict(embed_json)
+            yield embed
+        with open("members.json", "r") as file:
+            temp_ban_embeds = parse_embed_json(file.read())
+
+        for embed in temp_ban_embeds:
+            await ctx.send(embed=embed)
+
+
 
 @bot.slash_command(name="seemembers", guild_ids= servers, description = "Watch Member List")
-async def seewmembers(ctx):
+async def seemembers(ctx):
     with open("members.json", "r") as json_file:
         
         default = "Su data es "
@@ -69,10 +85,31 @@ async def seewmembers(ctx):
             for item in data["miembros"]:
                 print(count)
                 respuesta2= data["miembros"][count]["misiones"]
-                respuesta = respuesta + data["miembros"][count]["nombre"] + " = " + respuesta2 + " || "
+                respuesta = respuesta + data["miembros"][count]["nombre"] + " = " + respuesta2 + " | "
                 count = count + 1
         await ctx.respond(respuesta)  
         
+
+@bot.slash_command(name="shutdown", guild_ids= servers, description = "Stop the BOT")
+async def shutdown(ctx):
+    await ctx.logout()
+
+
+
+@bot.slash_command(name="addmember", guild_ids= servers, description = "Add Member to the List")
+async def addmember(ctx):
+    database = []
+    for i in range(1):
+        members = {}
+        name = input("name: ")
+        missions= input("number: ")
+        database.append(members)
+    with open("members.json","a") as json_file:
+        json.dump(database, json_file)
+        print("File saved")
+
+
+
 
 @bot.slash_command(name="createevent", guild_ids= servers)
 async def createevent(ctx):
