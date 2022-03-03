@@ -9,7 +9,6 @@ import json
 from json import loads
 import os 
 
-
 #logging.basicConfig(level=logging.DEBUG)
 #logger = logging.getLogger("discord")
 #logger.setLevel(logging.DEBUG)
@@ -75,30 +74,26 @@ async def currentmembers(ctx):
 async def seemembers(ctx):
     with open("members.json", "r") as json_file:
         
-        default = "Su data es "
-        respuesta = ""
-        respuesta = respuesta + default
+        default = "The list of members is: "
+        answer = ""
+        answer = answer + default
         
         count = 0
         for line in json_file.readlines():       
             data=json.loads(line)
-            for item in data["miembros"]:
+            for item in data["members"]:
                 print(count)
-                respuesta2= data["miembros"][count]["misiones"]
-                respuesta = respuesta + data["miembros"][count]["nombre"] + " = " + respuesta2 + " | "
+                answer2= data["members"][count]["missions"]
+                answer = answer + data["members"][count]["name"] + " = " + answer2 + " | "
                 count = count + 1
-        await ctx.respond(respuesta)  
+        await ctx.respond(answer)  
         
 
-@bot.slash_command(name="shutdown", guild_ids= servers, description = "Stop the BOT")
-async def shutdown(ctx):
-    await ctx.logout()
-
-
-
 @bot.slash_command(name="addmember", guild_ids= servers, description = "Add Member to the List")
-async def addmember(ctx):
+async def addmember(ctx, name, missions):
     database = []
+    await ctx.respond(int(name) +" " + int(missions))
+    
     for i in range(1):
         members = {}
         name = input("name: ")
