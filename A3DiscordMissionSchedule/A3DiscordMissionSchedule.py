@@ -1,17 +1,10 @@
+from ast import For
 from http import server
-import sensitiveData
+from data import sensitiveData
 import discord
 from discord.ext import commands
 from discord.ui import InputText, Modal
 import logging  
-
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger("discord")
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename="discord.log",encoding="utf-8",mode="w")
-handler.setFormatter(logging.Formatter("%(asctime)s:%(LevelName)s:%(name)s:%(message)s"))
-logger.addHandler(handler)
 
 # Notas:
 # ctx quiere decir el contexto, por ejemplo en  "async def modaltest(ctx):"
@@ -21,6 +14,7 @@ logger.addHandler(handler)
 # En ese ejemplo imprimo el id del canal por donde ha sido llamado
 bot = discord.Bot()
 servers = [945803024897564723]
+channels = bot.get_all_channels
 
 
    
@@ -40,10 +34,9 @@ class MyModal(Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="Your Modal Results", color=discord.Color.random())
-        embed.add_field(name="First Input", value=self.children[0].value, inline=False)
-        embed.add_field(name="Second Input", value=self.children[1].value, inline=False)
-        await interaction.response.send_message(embeds=[embed])
+        await parseDataEvent(self.children)
+        
+        
 
 
 @bot.slash_command(guild_ids = servers, name="test", description = "Testing things out")
@@ -51,7 +44,7 @@ async def test(ctx):
   print("Command recieved")
   await ctx.respond(f"I am working \n\nLatency: {bot.latency*1000} ms.")
 
-@bot.slash_command(name="createevent", guild_ids= servers)
+@bot.slash_command(name="newevent", guild_ids= servers)
 async def createevent(ctx):
     print("Command recieved")
 
@@ -61,7 +54,7 @@ async def createevent(ctx):
             modal = MyModal(title="Modal Triggered from Button")
             channel = ctx.channel.id
             print(f"Channel: {channel}")
-            await channel.send.send_modal(modal)
+            await interaction.response.send_modal(modal)
 
         @discord.ui.select(
             placeholder="Select the preset",
@@ -78,10 +71,28 @@ async def createevent(ctx):
             await interaction.response.send_modal(modal)
             
         add_reactions(ctx)
+        async def send_event(ctx, entries):
+            embed = discord.Embed(title="Your Modal Results", color=discord.Color.random())
+            embed.add_field(name="First Input", value=entries[0].value, inline=False)
+            embed.add_field(name="Second Input", value=entries[1].value, inline=False)
+            print(channels)
+            await bot.send('hello')
     view = MyView()
     author = ctx.author
     print(f"Author: {author}")
     await author.send("Select a preset to make the event with", view=view)
+
+
+     
+async def parseDataEvent(entries):
+     embed = discord.Embed(title="Your Modal Results", color=discord.Color.random())
+     embed.add_field(name="First Input", value=entries[0].value, inline=False)
+     embed.add_field(name="Second Input", value=entries[1].value, inline=False)
+     print(channels)
+     channel = discord.utils.get(bot.get_guild(945803024897564723).channels, name='general')
+     message = await channel.send(embed=embed)   
+     message_id = message.id
+
 
 def add_reactions(ctx):
   print("Adding reactions")
